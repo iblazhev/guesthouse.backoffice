@@ -18,7 +18,7 @@ export default defineConfig({
       scopeBehaviour: "local", // Default behavior is local scope
     },
   },
-  base: `/admin`,
+  base: `/`,
   build: {
     outDir: "build",
     emptyOutDir: true,

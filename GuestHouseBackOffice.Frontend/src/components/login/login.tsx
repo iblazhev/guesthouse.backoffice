@@ -45,7 +45,7 @@ export default function Login() {
             <div className={styles.header}>
                 <Title>Sign in</Title>
                 <Text>
-                    Welcome back to Blazheva House Admin UI! Please enter your details
+                    Welcome back to Guest House Admin UI! Please enter your details
                     below to sign in.
                 </Text>
             </div>

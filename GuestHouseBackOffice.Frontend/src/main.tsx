@@ -1,6 +1,7 @@
 import * as ReactDOM from "react-dom/client";
 import {ConfigProvider} from "antd";
 import {theme} from "./theme.ts";
+import "./utils/i18.ts";
 import App from "./app.tsx";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import LandingPage from "./pages/landing-page.tsx";
@@ -37,7 +38,7 @@ const router = createBrowserRouter(
         },
     ],
     {
-        basename: "/admin",
+        basename: "/",
     },
 );
 
