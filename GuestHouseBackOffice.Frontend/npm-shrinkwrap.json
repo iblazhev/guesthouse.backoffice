@@ -1,11 +1,11 @@
 {
-  "name": "guesthouse.adminpage",
+  "name": "GuestHouseBackOffice.Frontend",
   "version": "0.0.0",
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
-      "name": "guesthouse.adminpage",
+      "name": "GuestHouseBackOffice.Frontend",
       "version": "0.0.0",
       "dependencies": {
         "@ant-design/charts": "^2.2.1",
