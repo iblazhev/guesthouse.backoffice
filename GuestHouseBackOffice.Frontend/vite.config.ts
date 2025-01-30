@@ -1,0 +1,33 @@
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  server: {
+    port: 3000,
+  },
+  plugins: [react()],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "./src/styles/_main.scss";`,
+      },
+    },
+    modules: {
+      localsConvention: "camelCase", // Convert dashes to camelCase
+      scopeBehaviour: "local", // Default behavior is local scope
+    },
+  },
+  base: `/admin`,
+  build: {
+    outDir: "build",
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        assetFileNames: "client/rsc/[ext]/[name][extname]",
+        chunkFileNames: "client/rsc/[chunks]/[name].[hash].js",
+        entryFileNames: "client/rsc/js/client.js",
+      },
+    },
+  },
+});

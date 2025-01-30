@@ -1,0 +1,24 @@
+.table-button-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  padding: toRem(20);
+  gap: toRem(10);
+}
+
+.table {
+  padding: toRem(20);
+}
+
+.table-box {
+  position: relative;
+  display: inline-block;
+  width: calc(100% - 40px);
+  margin-left: toRem(20);
+  margin-right: toRem(20);
+  background-color: #ffffff;
+  border: 1px solid rgba(5, 5, 5, 0.06);
+  border-radius: 8px;
+  transition: all 0.2s;
+}
