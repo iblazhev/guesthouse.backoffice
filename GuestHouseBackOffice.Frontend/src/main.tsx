@@ -1,14 +1,12 @@
 import * as ReactDOM from "react-dom/client";
-import {ConfigProvider} from "antd";
-import {theme} from "./theme.ts";
+import "./utils/i18.ts";
 import App from "./app.tsx";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import LandingPage from "./pages/landing-page.tsx";
 import RequestsPage from "./pages/requests-page.tsx";
-import PaymentsPage from "./pages/payments-page.tsx";
+import PaymentsPage from "./pages/payments-page.tsx"; // Import Bulgarian locale for Ant Design
 // Import Bulgarian locale for Ant Design
-import bgBG from 'antd/locale/bg_BG';
-import GalleryPage from "./pages/gallery-page.tsx"; // Import Bulgarian locale for Ant Design
+// Import Bulgarian locale for Ant Design
 
 const router = createBrowserRouter(
     [
@@ -28,21 +26,17 @@ const router = createBrowserRouter(
                 {
                     path: "payments",
                     element: <PaymentsPage/>,
-                },
-                {
-                    path: "gallery",
-                    element: <GalleryPage/>,
-                },
+                }
             ],
         },
     ],
     {
-        basename: "/admin",
+        basename: "/",
     },
 );
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-    <ConfigProvider locale={bgBG} theme={theme}>
-        <RouterProvider router={router}/>
-    </ConfigProvider>,
+    //<ConfigProvider locale={bgBG} theme={theme}>
+    <RouterProvider router={router}/>
+    // </ConfigProvider>,
 );

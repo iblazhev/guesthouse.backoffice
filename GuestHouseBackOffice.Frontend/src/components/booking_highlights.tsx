@@ -3,12 +3,15 @@ import { Avatar, List } from "antd";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { BookingRequest } from "../types/bookingRequest.ts";
+import {useTranslation} from "react-i18next";
 
 interface Props {
   requests: BookingRequest[];
 }
 
 export default function BookingHighlights({ requests }: Props) {
+    
+  const { t } = useTranslation();
   dayjs.extend(utc);
 
   function getDateString(item: string) {
@@ -29,7 +32,11 @@ export default function BookingHighlights({ requests }: Props) {
               />
             }
             title={<a href="https://ant.design">{item.name}</a>}
-            description={`дати: ${getDateString(item.startDate)} - ${getDateString(item.endDate)}, брой хора: ${item.peopleCount}`}
+            description={t('eventDetails', {
+                startDate: getDateString(item.startDate),
+                endDate: getDateString(item.endDate),
+                peopleCount: item.peopleCount,
+            })}
           />
         </List.Item>
       )}

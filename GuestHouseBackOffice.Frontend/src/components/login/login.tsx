@@ -4,6 +4,7 @@ import {UserState, useUserState} from "../../store/user.ts";
 import {loginApi} from "../../services/api.ts";
 import {Log} from "../../utils/log.ts";
 import styles from "./login.module.scss"
+import {useTranslation} from "react-i18next";
 
 const {Text, Title} = Typography;
 
@@ -15,6 +16,7 @@ type FieldType = {
 export default function Login() {
     const {updateUser} = useUserState((state) => state);
     const [errorMsg, setErrorMsg] = useState("");
+    const { t } = useTranslation();
 
     const onFinish: FormProps<FieldType>["onFinish"] = (values) => {
         console.log("Success:", values);
@@ -45,8 +47,7 @@ export default function Login() {
             <div className={styles.header}>
                 <Title>Sign in</Title>
                 <Text>
-                    Welcome back to Blazheva House Admin UI! Please enter your details
-                    below to sign in.
+                    {t('welcome')}
                 </Text>
             </div>
             <Form
@@ -62,7 +63,7 @@ export default function Login() {
                 <Form.Item<FieldType>
                     label="Username"
                     name="username"
-                    rules={[{required: true, message: "Please input your username!"}]}
+                    rules={[{required: true, message: t('usernameValidation')}]}
                 >
                     <Input/>
                 </Form.Item>
@@ -70,7 +71,7 @@ export default function Login() {
                 <Form.Item<FieldType>
                     label="Password"
                     name="password"
-                    rules={[{required: true, message: "Please input your password!"}]}
+                    rules={[{required: true, message: t('passwordValidation')}]}
                 >
                     <Input.Password/>
                 </Form.Item>
@@ -80,12 +81,12 @@ export default function Login() {
                     valuePropName="checked"
                     wrapperCol={{offset: 8, span: 16}}
                 >
-                    <Checkbox>Remember me</Checkbox>
+                    <Checkbox>{t('rememberMe')}</Checkbox>
                 </Form.Item>
 
                 <Form.Item wrapperCol={{offset: 8, span: 16}}>
                     <Button type="primary" htmlType="submit">
-                        Submit
+                        {t('submit')}
                     </Button>
                 </Form.Item>
 
