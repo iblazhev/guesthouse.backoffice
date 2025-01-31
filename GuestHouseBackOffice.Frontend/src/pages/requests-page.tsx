@@ -15,7 +15,7 @@ export default function RequestsPage() {
                     type={"primary"}
                     onClick={() => setFormOpen(true)}
                 >
-                    t('createRequest')
+                    {t('createRequest')}
                 </Button>
             </div>
             <CreateRequestForm formOpen={formOpen} setFormOpen={setFormOpen}/>
