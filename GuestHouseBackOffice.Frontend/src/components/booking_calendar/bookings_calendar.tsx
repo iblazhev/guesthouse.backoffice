@@ -10,6 +10,7 @@ import { HeaderRender } from "antd/es/calendar/generateCalendar";
 import updateLocale from "dayjs/plugin/updateLocale";
 import "dayjs/locale/bg";
 import { BookingRequest } from "../../types/bookingRequest.ts";
+import {useTranslation} from "react-i18next";
 
 dayjs.locale("bg");
 
@@ -22,6 +23,9 @@ export default function BookingsCalendar({
   requests,
   onClick,
 }: BookingsCalendarProps) {
+
+  const { t } = useTranslation();
+  
   dayjs.extend(isBetween);
   dayjs.extend(utc);
   dayjs.extend(updateLocale);
@@ -29,18 +33,18 @@ export default function BookingsCalendar({
     weekStart: 1,
   });
   const months = [
-    "Януари",
-    "Февруари",
-    "Март",
-    "Април",
-    "Май",
-    "Юни",
-    "Юли",
-    "Август",
-    "Септември",
-    "Октомври",
-    "Ноември",
-    "Декември",
+    t('months.january'),
+    t('months.february'),
+    t('months.march'),
+    t('months.april'),
+    t('months.may'),
+    t('months.june'),
+    t('months.july'),
+    t('months.august'),
+    t('months.september'),
+    t('months.october'),
+    t('months.november'),
+    t('months.december')
   ];
 
   const monthCellRender = (value: Dayjs) => {
@@ -209,8 +213,8 @@ export default function BookingsCalendar({
               onChange={(e: RadioChangeEvent) => onTypeChange(e.target.value)}
               value={type}
             >
-              <Radio.Button value="month">Месец</Radio.Button>
-              <Radio.Button value="year">Година</Radio.Button>
+              <Radio.Button value="month">{t('month')}</Radio.Button>
+              <Radio.Button value="year">{t('year')}</Radio.Button>
             </Radio.Group>
           </Col>
           <Col>
