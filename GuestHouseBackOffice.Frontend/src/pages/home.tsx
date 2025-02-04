@@ -16,11 +16,11 @@ const {Header, Sider, Content} = Layout;
 
 export default function Home() {
     const {i18n} = useTranslation();
-    const [antdLocale, setAntdLocale] = useState(antdLocales[i18n.language]);
+    const [antdLocale, setAntdLocale] = useState(antdLocales[i18n.language as keyof typeof antdLocales] || antdLocales.en);
 
     // Update Ant Design locale when i18n language changes
     useEffect(() => {
-        setAntdLocale(antdLocales[i18n.language]);
+        setAntdLocale(antdLocales[i18n.language as keyof typeof antdLocales] || antdLocales.en);
     }, [i18n.language]);
 
     const [collapsed, setCollapsed] = useState(true);
