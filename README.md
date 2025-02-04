@@ -11,6 +11,7 @@ Welcome to the **GuestHouseBackOffice** project! This repository contains two ma
 4. [Installation and Setup](#installation-and-setup)
     - [Backend Setup](#backend-setup)
     - [Frontend Setup](#frontend-setup)
+    - [Nginx Setup](#nginx-setup)
 5. [Usage](#usage)
 6. [Contributing](#contributing)
 7. [License](#license)
@@ -90,6 +91,77 @@ The backend will start on `http://localhost:5005` by default.
     npm run dev
 
 The frontend will start on `http://localhost:3000`.
+
+### Nginx Setup
+Example setup on ubuntu:
+1. Build the .net application
+
+ ```dotnet publish "$DOTNET_PROJECT_PATH" -c Release -o "$DOTNET_PUBLISH_PATH"```
+
+2.Create the service under file `/etc/systemd/system/dotnet-app.service`
+``` 
+[Unit]
+Description=Dotnet Application
+After=network.target
+
+[Service]
+WorkingDirectory=$DOTNET_PUBLISH_PATH
+ExecStart=/usr/bin/dotnet $DOTNET_PUBLISH_PATH/GuestHouseBackOffice.Api.dll
+Restart=always
+User=www-data
+Group=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+Environment="ConnectionStrings__DefaultConnection=$YOUR_CONNECTION_STRING"
+
+[Install]
+WantedBy=multi-user.target 
+```
+3. Run the service
+``` 
+# Reload systemd and start the service
+sudo systemctl daemon-reload
+sudo systemctl enable dotnet-app
+sudo systemctl restart dotnet-app
+```
+
+4.Build the Front End
+```
+npm install
+npm run build
+```
+
+5. Configure nginx - 
+
+`sudo nano /etc/nginx/sites-available/react-app`
+
+```
+server {
+    listen 80;
+    server_name localhost; # put your server ip or domain here
+
+    root /src/react/build;  # Path to your React app's build folder
+    index index.html;
+
+    location / {
+        try_files $uri /index.html;
+    }
+    
+    location /api/ {
+        proxy_pass http://localhost:5000/;  # Modify with your backend
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    error_page 404 /index.html;
+}
+```
+
+`sudo systemctl restart nginx
+`
 
 ---
 
