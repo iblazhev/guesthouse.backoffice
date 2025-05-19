@@ -1,42 +1,25 @@
-import {data} from "@remix-run/node";
-import {Input} from "~/components/ui/input";
-import {Label} from "~/components/ui/label";
-import {Button} from "~/components/ui/button";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "~/components/ui/card";
-import {InputPassword} from "~/components/custom/input-password";
-
-
-export function loader() {
-    return data({})
-}
-
 export default function Login() {
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-white">
-            <Card className="w-[350px] border-0 shadow-none">
-                <CardHeader>
-                    <CardTitle>Sign in</CardTitle>
-                    <CardDescription>Welcome back to Guest House Admin UI! Please enter your details below to sign
-                        in.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form>
-                        <div className="grid w-full items-center gap-4">
-                            <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="username">Username</Label>
-                                <Input id="username" placeholder="Username"/>
-                            </div>
-                            <div className="flex flex-col space-y-1.5">
-                                <Label htmlFor="password">Password</Label>
-                                <InputPassword/>
-                            </div>
-                            <div className="flex flex-col space-y-1.5">
-                                <Button>Login</Button>
-                            </div>
-                        </div>
-                    </form>
-                </CardContent>
-            </Card>
+    return (<div className="hero bg-base-200 min-h-screen">
+        <div className="hero-content flex-col lg:flex-row-reverse">
+            <div className="text-center lg:text-left">
+                <h1 className="text-5xl font-bold">Login now!</h1>
+                <p className="py-6">
+                    Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
+                    quasi. In deleniti eaque aut repudiandae et a id nisi.
+                </p>
+            </div>
+            <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
+                <div className="card-body">
+                    <fieldset className="fieldset">
+                        <label className="label">Email</label>
+                        <input type="email" className="input" placeholder="Email"/>
+                        <label className="label">Password</label>
+                        <input type="password" className="input" placeholder="Password"/>
+                        <div><a className="link link-hover">Forgot password?</a></div>
+                        <button className="btn btn-neutral mt-4">Login</button>
+                    </fieldset>
+                </div>
+            </div>
         </div>
-    )
+    </div>);
 }

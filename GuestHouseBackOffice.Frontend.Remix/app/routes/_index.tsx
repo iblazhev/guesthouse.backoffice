@@ -1,10 +1,9 @@
-import {Button} from "~/components/ui/button";
-
+import Login from "~/routes/login";
 
 export default function Index() {
-  return (
-      <div>
-        <Button>Click me</Button>
-      </div>
-  );
+    return (
+        <div>
+            <Login/>
+        </div>
+    );
 }
