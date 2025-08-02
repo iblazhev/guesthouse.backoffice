@@ -30,10 +30,6 @@ flutter_lints
 3.5
 file:///Users/admin/.pub-cache/hosted/pub.dev/flutter_lints-5.0.0/
 file:///Users/admin/.pub-cache/hosted/pub.dev/flutter_lints-5.0.0/lib/
-intl
-3.3
-file:///Users/admin/.pub-cache/hosted/pub.dev/intl-0.20.2/
-file:///Users/admin/.pub-cache/hosted/pub.dev/intl-0.20.2/lib/
 leak_tracker
 3.2
 file:///Users/admin/.pub-cache/hosted/pub.dev/leak_tracker-10.0.9/
@@ -66,10 +62,6 @@ path
 3.4
 file:///Users/admin/.pub-cache/hosted/pub.dev/path-1.9.1/
 file:///Users/admin/.pub-cache/hosted/pub.dev/path-1.9.1/lib/
-simple_gesture_detector
-2.12
-file:///Users/admin/.pub-cache/hosted/pub.dev/simple_gesture_detector-0.2.1/
-file:///Users/admin/.pub-cache/hosted/pub.dev/simple_gesture_detector-0.2.1/lib/
 source_span
 3.1
 file:///Users/admin/.pub-cache/hosted/pub.dev/source_span-1.10.1/
@@ -86,10 +78,6 @@ string_scanner
 3.1
 file:///Users/admin/.pub-cache/hosted/pub.dev/string_scanner-1.4.1/
 file:///Users/admin/.pub-cache/hosted/pub.dev/string_scanner-1.4.1/lib/
-table_calendar
-3.0
-file:///Users/admin/.pub-cache/hosted/pub.dev/table_calendar-3.2.0/
-file:///Users/admin/.pub-cache/hosted/pub.dev/table_calendar-3.2.0/lib/
 term_glyph
 3.1
 file:///Users/admin/.pub-cache/hosted/pub.dev/term_glyph-1.2.2/
