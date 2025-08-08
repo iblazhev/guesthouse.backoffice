@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'widgets/monthly_calendar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -162,7 +163,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Начало"),
+        title: Text("Здравей, $username!"),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -175,10 +176,50 @@ class HomeScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Center(
-        child: Text(
-          "Здравей, $username! 🎉",
-          style: const TextStyle(fontSize: 24),
+      body: ListView(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.book_online, color: Colors.blue),
+            title: const Text(
+              "Резервации",
+              style: TextStyle(fontSize: 18),
+            ),
+            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ReservationsScreen(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ReservationsScreen extends StatelessWidget {
+  const ReservationsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    // Prefilled reservation for Aug 19 (check-in) to Aug 22 (checkout)
+    final reservation = DateTimeRange(
+      start: DateTime(now.year, 8, 19),
+      end: DateTime(now.year, 8, 22),
+    );
+
+    return Scaffold(
+      appBar: AppBar(title: const Text("Резервации")),
+      body: SingleChildScrollView(
+        child: MonthlyCalendar(
+          year: now.year,
+          month: 8, // August
+          reservations: [reservation],
+          reservationColor: Colors.lightGreenAccent.shade200,
         ),
       ),
     );
