@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'widgets/monthly_calendar.dart';
+import 'services/auth_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,35 +36,45 @@ class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-
-  final String mockUsername = 'test';
-  final String mockPassword = '1234';
+  final _auth = AuthService(); // removed const and baseUrl to use platform-aware default
 
   bool _isLoading = false;
   bool _obscurePassword = true;
 
-  void _login() {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
+  Future<void> _login() async {
+    if (!_formKey.currentState!.validate()) return;
 
-      Future.delayed(const Duration(seconds: 1), () {
-        setState(() => _isLoading = false);
+    setState(() => _isLoading = true);
+    try {
+      final user = await _auth.login(
+        LoginData(
+          email: _usernameController.text.trim(),
+          password: _passwordController.text,
+        ),
+      );
 
-        if (_usernameController.text == mockUsername &&
-            _passwordController.text == mockPassword) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => HomeScreen(username: mockUsername),
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Грешно име или парола')),
-          );
-        }
-      });
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => HomeScreen(username: user.username),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -96,11 +107,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextFormField(
                       controller: _usernameController,
                       decoration: const InputDecoration(
-                        labelText: 'Потребителско име',
-                        prefixIcon: Icon(Icons.person),
+                        labelText: 'Имейл',
+                        prefixIcon: Icon(Icons.email),
                       ),
+                      keyboardType: TextInputType.emailAddress,
                       validator: (value) =>
-                          value!.isEmpty ? 'Въведете потребителско име' : null,
+                          value == null || value.trim().isEmpty ? 'Въведете имейл' : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -121,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       validator: (value) =>
-                          value!.isEmpty ? 'Въведете парола' : null,
+                          value == null || value.isEmpty ? 'Въведете парола' : null,
                     ),
                     const SizedBox(height: 24),
                     SizedBox(
