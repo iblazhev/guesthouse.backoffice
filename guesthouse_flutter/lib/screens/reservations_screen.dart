@@ -13,11 +13,20 @@ class ReservationsScreen extends StatefulWidget {
 class _ReservationsScreenState extends State<ReservationsScreen> {
   final _requests = RequestsService();
   late Future<List<BookingRequest>> _future;
+  final _scrollController = ScrollController();
+  final List<GlobalKey> _monthKeys = List.generate(12, (_) => GlobalKey());
+  bool _scrolledToCurrent = false;
 
   @override
   void initState() {
     super.initState();
     _future = _requests.getRequests(widget.accessToken);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _openCreateReservation() async {
@@ -227,6 +236,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
     if (saved) {
       setState(() {
         _future = _requests.getRequests(widget.accessToken);
+        _scrolledToCurrent = false; // allow re-scroll after refresh
       });
     }
   }
@@ -281,12 +291,42 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
             );
           }).toList();
 
+          // Build all months Jan -> Dec for the current year
+          final year = now.year;
+          final monthWidgets = List<Widget>.generate(12, (i) {
+            final m = i + 1;
+            return Padding(
+              key: _monthKeys[i],
+              padding: const EdgeInsets.only(bottom: 16),
+              child: MonthlyCalendar(
+                year: year,
+                month: m,
+                reservations: reservations,
+                reservationColor: Colors.lightGreenAccent.shade200,
+              ),
+            );
+          });
+
+          // After first successful build, scroll current month into view
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!_scrolledToCurrent) {
+              final ctx = _monthKeys[now.month - 1].currentContext;
+              if (ctx != null) {
+                Scrollable.ensureVisible(
+                  ctx,
+                  alignment: 0.0, // align to top
+                  duration: const Duration(milliseconds: 300),
+                );
+                _scrolledToCurrent = true;
+              }
+            }
+          });
+
           return SingleChildScrollView(
-            child: MonthlyCalendar(
-              year: now.year,
-              month: now.month,
-              reservations: reservations,
-              reservationColor: Colors.lightGreenAccent.shade200,
+            controller: _scrollController,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Column(children: monthWidgets),
             ),
           );
         },
