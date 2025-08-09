@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'widgets/monthly_calendar.dart';
 import 'services/auth_service.dart';
+import 'services/requests_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final _auth = AuthService(); // removed const and baseUrl to use platform-aware default
+  final _auth = AuthService(); // platform-aware base URL
 
   bool _isLoading = false;
   bool _obscurePassword = true;
@@ -57,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => HomeScreen(username: user.username),
+          builder: (_) => HomeScreen(user: user),
         ),
       );
     } catch (e) {
@@ -168,14 +169,14 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class HomeScreen extends StatelessWidget {
-  final String username;
-  const HomeScreen({super.key, required this.username});
+  final UserState user;
+  const HomeScreen({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Здравей, $username!"),
+        title: Text("Здравей, ${user.username}!"),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -201,7 +202,7 @@ class HomeScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => const ReservationsScreen(),
+                  builder: (_) => ReservationsScreen(accessToken: user.accessToken),
                 ),
               );
             },
@@ -212,27 +213,75 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class ReservationsScreen extends StatelessWidget {
-  const ReservationsScreen({super.key});
+class ReservationsScreen extends StatefulWidget {
+  final String accessToken;
+  const ReservationsScreen({super.key, required this.accessToken});
+
+  @override
+  State<ReservationsScreen> createState() => _ReservationsScreenState();
+}
+
+class _ReservationsScreenState extends State<ReservationsScreen> {
+  final _requests = RequestsService();
+  late Future<List<BookingRequest>> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = _requests.getRequests(widget.accessToken);
+  }
 
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    // Prefilled reservation for Aug 19 (check-in) to Aug 22 (checkout)
-    final reservation = DateTimeRange(
-      start: DateTime(now.year, 8, 19),
-      end: DateTime(now.year, 8, 22),
-    );
 
     return Scaffold(
       appBar: AppBar(title: const Text("Резервации")),
-      body: SingleChildScrollView(
-        child: MonthlyCalendar(
-          year: now.year,
-          month: 8, // August
-          reservations: [reservation],
-          reservationColor: Colors.lightGreenAccent.shade200,
-        ),
+      body: FutureBuilder<List<BookingRequest>>(
+        future: _future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Грешка при зареждане на заявки'),
+                    const SizedBox(height: 8),
+                    Text(snapshot.error.toString(), textAlign: TextAlign.center),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => setState(() {
+                        _future = _requests.getRequests(widget.accessToken);
+                      }),
+                      child: const Text('Опитайте отново'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          final requests = snapshot.data ?? const <BookingRequest>[];
+          final reservations = requests.map((r) {
+            final start = DateTime.parse(r.startDate);
+            final end = DateTime.parse(r.endDate);
+            return DateTimeRange(start: start, end: end);
+          }).toList();
+
+          return SingleChildScrollView(
+            child: MonthlyCalendar(
+              year: now.year,
+              month: now.month,
+              reservations: reservations,
+              reservationColor: Colors.lightGreenAccent.shade200,
+            ),
+          );
+        },
       ),
     );
   }
