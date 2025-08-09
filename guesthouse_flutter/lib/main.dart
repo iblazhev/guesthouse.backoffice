@@ -266,11 +266,16 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
             );
           }
 
-          final requests = snapshot.data ?? const <BookingRequest>[];
-          final reservations = requests.map((r) {
-            final start = DateTime.parse(r.startDate);
-            final end = DateTime.parse(r.endDate);
-            return DateTimeRange(start: start, end: end);
+          // Build calendar ranges normalized to local date-only so handover days render properly
+          final reservations = (snapshot.data ?? const <BookingRequest>[]) 
+              .map((r) {
+            final start = DateTime.parse(r.startDate).toLocal();
+            final end = DateTime.parse(r.endDate).toLocal();
+            // Use date-only (end is treated as checkout/exclusive inside the calendar)
+            return DateTimeRange(
+              start: DateTime(start.year, start.month, start.day),
+              end: DateTime(end.year, end.month, end.day),
+            );
           }).toList();
 
           return SingleChildScrollView(
