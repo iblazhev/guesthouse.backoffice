@@ -98,4 +98,67 @@ class RequestsService {
     } catch (_) {}
     throw Exception(message);
   }
+
+  // New: DTO for creating a booking request
+  Map<String, dynamic> createRequestBody({
+    required String name,
+    required String email,
+    required String phone,
+    required DateTime startDate,
+    required DateTime endDate,
+    required int peopleCount,
+    required int adultsCount,
+    required int kidsCount,
+    required String city,
+    required String comments,
+    bool approved = false,
+  }) {
+    return {
+      'name': name,
+      'email': email,
+      'phone': phone,
+      'startDate': startDate.toUtc().toIso8601String(),
+      'endDate': endDate.toUtc().toIso8601String(),
+      'peopleCount': peopleCount,
+      'adultsCount': adultsCount,
+      'kidsCount': kidsCount,
+      'city': city,
+      'comments': comments,
+      'approved': approved,
+    };
+  }
+
+  // New: POST /requests
+  Future<BookingRequest> createRequest({
+    required String accessToken,
+    required Map<String, dynamic> body,
+  }) async {
+    final uri = Uri.parse('$baseUrl/requests');
+    final resp = await http
+        .post(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+          },
+          body: jsonEncode(body),
+        )
+        .timeout(const Duration(seconds: 15));
+
+    if (resp.statusCode >= 200 && resp.statusCode < 300) {
+      final data = jsonDecode(resp.body);
+      if (data is Map<String, dynamic>) {
+        return BookingRequest.fromJson(data);
+      }
+      throw const FormatException('Unexpected response for create /requests');
+    }
+
+    String message = 'Error ${resp.statusCode}';
+    try {
+      final err = jsonDecode(resp.body);
+      if (err is Map && err['message'] != null) message = err['message'].toString();
+    } catch (_) {}
+    throw Exception(message);
+  }
 }
