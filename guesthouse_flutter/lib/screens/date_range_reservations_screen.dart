@@ -11,52 +11,91 @@ class DateRangeReservationsScreen extends StatefulWidget {
 
 class _DateRangeReservationsScreenState extends State<DateRangeReservationsScreen> {
   final _requests = RequestsService();
-  DateTime? _from;
-  DateTime? _to;
+  final List<DateTimeRange> _ranges = [];
   Future<List<BookingRequest>>? _future;
   bool _searchedOnce = false;
 
   String _fmt(DateTime d) =>
       '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
-  Future<void> _pickFrom() async {
-    final picked = await showDatePicker(
+  DateTime _atMidnight(DateTime d) => DateTime(d.year, d.month, d.day);
+
+  Future<void> _addRange() async {
+    final initialStart = DateTime.now();
+    final initialEnd = initialStart.add(const Duration(days: 1));
+    final initial = _ranges.isNotEmpty
+        ? _ranges.last
+        : DateTimeRange(start: initialStart, end: initialEnd);
+
+    final picked = await showDateRangePicker(
       context: context,
-      initialDate: _from ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+      initialDateRange: initial,
+      saveText: 'Избор',
+      helpText: 'Изберете период',
+      builder: (ctx, child) => child ?? const SizedBox.shrink(),
     );
+
     if (picked != null) {
+      // Normalize to midnight for both boundaries
+      final start = _atMidnight(picked.start);
+      final end = _atMidnight(picked.end);
       setState(() {
-        _from = picked;
-        if (_to != null && _to!.isBefore(_from!)) {
-          _to = _from;
-        }
+        _ranges.add(DateTimeRange(start: start, end: end));
       });
     }
   }
 
-  Future<void> _pickTo() async {
-    final base = _from ?? DateTime.now();
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: _to ?? base,
-      firstDate: _from ?? DateTime(2000),
-      lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
-    );
-    if (picked != null) {
-      setState(() => _to = picked);
+  void _removeRange(int index) {
+    setState(() {
+      _ranges.removeAt(index);
+    });
+  }
+
+  Future<List<BookingRequest>> _fetchForRanges() async {
+    // If no ranges, return empty list to prompt user to add some
+    if (_ranges.isEmpty) return <BookingRequest>[];
+
+    final List<BookingRequest> combined = [];
+    final ids = <int>{};
+    final fallbacks = <String>{};
+
+    for (final r in _ranges) {
+      final results = await _requests.getRequests(
+        widget.accessToken,
+        from: r.start,
+        to: r.end,
+      );
+      for (final br in results) {
+        if (br.id != null) {
+          if (ids.add(br.id!)) {
+            combined.add(br);
+          }
+        } else {
+          // Fallback uniqueness by name + start + end
+          final key = '${br.name}-${br.startDate}-${br.endDate}';
+          if (fallbacks.add(key)) {
+            combined.add(br);
+          }
+        }
+      }
     }
+    return combined;
   }
 
   void _search() {
     setState(() {
       _searchedOnce = true;
-      _future = _requests.getRequests(
-        widget.accessToken,
-        from: _from,
-        to: _to,
-      );
+      _future = _fetchForRanges();
+    });
+  }
+
+  void _clear() {
+    setState(() {
+      _ranges.clear();
+      _future = null;
+      _searchedOnce = false;
     });
   }
 
@@ -72,22 +111,39 @@ class _DateRangeReservationsScreenState extends State<DateRangeReservationsScree
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: _pickFrom,
+                    child: ElevatedButton.icon(
+                      onPressed: _addRange,
                       icon: const Icon(Icons.date_range),
-                      label: Text(_from == null ? 'От дата' : _fmt(_from!)),
+                      label: const Text('Добави период'),
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: _pickTo,
-                      icon: const Icon(Icons.event),
-                      label: Text(_to == null ? 'До дата' : _fmt(_to!)),
-                    ),
+                  IconButton(
+                    tooltip: 'Изчисти',
+                    onPressed: _clear,
+                    icon: const Icon(Icons.clear),
                   ),
                 ],
               ),
+              if (_ranges.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: List.generate(_ranges.length, (i) {
+                      final r = _ranges[i];
+                      final label = '${_fmt(r.start)} → ${_fmt(r.end)}';
+                      return Chip(
+                        label: Text(label),
+                        deleteIcon: const Icon(Icons.close),
+                        onDeleted: () => _removeRange(i),
+                      );
+                    }),
+                  ),
+                ),
+              ],
               const SizedBox(height: 12),
               Row(
                 children: [
@@ -98,19 +154,6 @@ class _DateRangeReservationsScreenState extends State<DateRangeReservationsScree
                       label: const Text('Търси'),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    tooltip: 'Изчисти',
-                    onPressed: () {
-                      setState(() {
-                        _from = null;
-                        _to = null;
-                        _future = null;
-                        _searchedOnce = false;
-                      });
-                    },
-                    icon: const Icon(Icons.clear),
-                  ),
                 ],
               ),
               const SizedBox(height: 16),
@@ -119,8 +162,8 @@ class _DateRangeReservationsScreenState extends State<DateRangeReservationsScree
                     ? Center(
                         child: Text(
                           _searchedOnce
-                              ? 'Няма резултати за избрания период'
-                              : 'Изберете период и натиснете „Търси“',
+                              ? 'Няма резултати за избраните периоди'
+                              : 'Добавете един или повече периоди и натиснете „Търси“',
                           textAlign: TextAlign.center,
                         ),
                       )
