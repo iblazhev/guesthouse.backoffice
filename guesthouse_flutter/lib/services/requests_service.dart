@@ -59,8 +59,19 @@ class RequestsService {
   final String baseUrl;
   RequestsService({String? baseUrl}) : baseUrl = baseUrl ?? defaultBaseUrl();
 
-  Future<List<BookingRequest>> getRequests(String accessToken) async {
-    final uri = Uri.parse('$baseUrl/requests');
+  Future<List<BookingRequest>> getRequests(
+    String accessToken, {
+    DateTime? from,
+    DateTime? to,
+  }) async {
+    var uri = Uri.parse('$baseUrl/requests');
+    final query = <String, String>{};
+    if (from != null) query['from'] = from.toUtc().toIso8601String();
+    if (to != null) query['to'] = to.toUtc().toIso8601String();
+    if (query.isNotEmpty) {
+      uri = uri.replace(queryParameters: query);
+    }
+
     final resp = await http.get(
       uri,
       headers: {

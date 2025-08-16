@@ -11,9 +11,13 @@ namespace GuestHouseBackOffice.Api.Controllers;
 public class RequestController(ISender mediator) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IList<RequestModel>>> GetList()
+    public async Task<ActionResult<IList<RequestModel>>> GetList([FromQuery] DateTime? from, [FromQuery] DateTime? to)
     {
-        var result = await mediator.Send(new GetRequestsQuery());
+        var result = await mediator.Send(new GetRequestsQuery
+        {
+            From = from,
+            To = to
+        });
         return Ok(result);
     }
 
