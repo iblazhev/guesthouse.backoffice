@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import 'reservations_screen.dart';
+import 'date_range_reservations_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final UserState user;
@@ -34,6 +35,22 @@ class HomeScreen extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (_) => ReservationsScreen(accessToken: user.accessToken),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.date_range, color: Colors.blue),
+            title: const Text(
+              'Резервации от до',
+              style: TextStyle(fontSize: 18),
+            ),
+            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => DateRangeReservationsScreen(accessToken: user.accessToken),
                 ),
               );
             },
