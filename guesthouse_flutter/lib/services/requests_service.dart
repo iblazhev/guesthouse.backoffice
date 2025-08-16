@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
+import '../common/api_base.dart';
 
 class BookingRequest {
   final int? id;
@@ -57,12 +57,7 @@ class BookingRequest {
 
 class RequestsService {
   final String baseUrl;
-  RequestsService({String? baseUrl}) : baseUrl = baseUrl ?? _defaultBaseUrl();
-
-  static String _defaultBaseUrl() {
-    if (Platform.isAndroid) return 'http://10.0.2.2:5005';
-    return 'http://localhost:5005';
-    }
+  RequestsService({String? baseUrl}) : baseUrl = baseUrl ?? defaultBaseUrl();
 
   Future<List<BookingRequest>> getRequests(String accessToken) async {
     final uri = Uri.parse('$baseUrl/requests');

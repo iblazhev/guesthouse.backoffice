@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
+import '../common/api_base.dart';
 
 class LoginData {
   final String email;
@@ -37,14 +37,7 @@ class UserState {
 
 class AuthService {
   final String baseUrl;
-  AuthService({String? baseUrl}) : baseUrl = baseUrl ?? _defaultBaseUrl();
-
-  static String _defaultBaseUrl() {
-    // Android emulator cannot reach host 'localhost'; use 10.0.2.2
-    if (Platform.isAndroid) return 'http://10.0.2.2:5005';
-    // iOS simulator/macOS use localhost
-    return 'http://localhost:5005';
-  }
+  AuthService({String? baseUrl}) : baseUrl = baseUrl ?? defaultBaseUrl();
 
   String _usernameFromEmail(String email) {
     final at = email.indexOf('@');
