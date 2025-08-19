@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../l10n/app_localizations.dart';
 import '../services/auth_service.dart';
 import 'home_screen.dart';
 
@@ -73,9 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      "Вход",
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(context)!.translate('loginTitle'),
+                      style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                       ),
