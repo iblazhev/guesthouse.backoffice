@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../services/requests_service.dart';
 import '../widgets/monthly_calendar.dart';
 import './add_reservation_screen.dart';
@@ -51,11 +52,11 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
     final now = DateTime.now();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Резервации')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.translate('reservations'))),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openCreateReservation,
         icon: const Icon(Icons.add),
-        label: const Text('Нова резервация'),
+        label: Text(AppLocalizations.of(context)!.translate('newReservation')),
       ),
       body: FutureBuilder<List<BookingRequest>>(
         future: _future,
@@ -70,7 +71,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('Грешка при зареждане на заявки'),
+                    Text(AppLocalizations.of(context)!.translate('errorLoadingRequests')),
                     const SizedBox(height: 8),
                     Text(snapshot.error.toString(), textAlign: TextAlign.center),
                     const SizedBox(height: 16),
@@ -78,7 +79,7 @@ class _ReservationsScreenState extends State<ReservationsScreen> {
                       onPressed: () => setState(() {
                         _future = _requests.getRequests(widget.accessToken);
                       }),
-                      child: const Text('Опитайте отново'),
+                      child: Text(AppLocalizations.of(context)!.translate('tryAgain')),
                     ),
                   ],
                 ),

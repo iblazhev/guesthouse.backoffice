@@ -85,25 +85,29 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 24),
                     TextFormField(
                       controller: _usernameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Имейл',
-                        prefixIcon: Icon(Icons.email),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.translate('email'),
+                        prefixIcon: const Icon(Icons.email),
                       ),
                       keyboardType: TextInputType.emailAddress,
-                      validator: (value) =>
-                          value == null || value.trim().isEmpty ? 'Въведете имейл' : null,
+                      validator: (value) => value == null || value.trim().isEmpty
+                          ? AppLocalizations.of(context)!.translate('enterEmail')
+                          : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
                       decoration: InputDecoration(
-                        labelText: 'Парола',
+                        labelText: AppLocalizations.of(context)!.translate('password'),
                         prefixIcon: const Icon(Icons.lock),
                         suffixIcon: IconButton(
-                          icon: Icon(_obscurePassword
-                              ? Icons.visibility
-                              : Icons.visibility_off),
+                          tooltip: AppLocalizations.of(context)!.translate(
+                            _obscurePassword ? 'showPassword' : 'hidePassword',
+                          ),
+                          icon: Icon(
+                            _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                          ),
                           onPressed: () {
                             setState(() {
                               _obscurePassword = !_obscurePassword;
@@ -111,8 +115,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                         ),
                       ),
-                      validator: (value) =>
-                          value == null || value.isEmpty ? 'Въведете парола' : null,
+                      validator: (value) => value == null || value.isEmpty
+                          ? AppLocalizations.of(context)!.translate('enterPassword')
+                          : null,
                     ),
                     const SizedBox(height: 24),
                     SizedBox(
@@ -129,9 +134,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? const CircularProgressIndicator(
                                 color: Colors.white,
                               )
-                            : const Text(
-                                "Вход",
-                                style: TextStyle(fontSize: 16),
+                            : Text(
+                                AppLocalizations.of(context)!.translate('loginTitle'),
+                                style: const TextStyle(fontSize: 16),
                               ),
                       ),
                     ),

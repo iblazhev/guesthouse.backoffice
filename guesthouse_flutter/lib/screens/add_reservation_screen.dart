@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../services/requests_service.dart';
 
 class AddReservationScreen extends StatefulWidget {
@@ -44,7 +45,7 @@ class _AddReservationScreenState extends State<AddReservationScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (_start == null || _end == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Изберете начална и крайна дата')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.translate('selectStartEndDate'))),
       );
       return;
     }
@@ -84,7 +85,7 @@ class _AddReservationScreenState extends State<AddReservationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Нова резервация'),
+        title: Text(AppLocalizations.of(context)!.translate('newReservation')),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -96,22 +97,22 @@ class _AddReservationScreenState extends State<AddReservationScreen> {
               children: [
                 TextFormField(
                   controller: _nameCtrl,
-                  decoration: const InputDecoration(labelText: 'Име'),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.translate('name')),
                   validator: (v) =>
-                      v == null || v.trim().isEmpty ? 'Въведете име' : null,
+                      v == null || v.trim().isEmpty ? AppLocalizations.of(context)!.translate('enterName') : null,
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _emailCtrl,
-                  decoration: const InputDecoration(labelText: 'Имейл'),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.translate('email')),
                   keyboardType: TextInputType.emailAddress,
                   validator: (v) =>
-                      v == null || v.trim().isEmpty ? 'Въведете имейл' : null,
+                      v == null || v.trim().isEmpty ? AppLocalizations.of(context)!.translate('enterEmail') : null,
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _phoneCtrl,
-                  decoration: const InputDecoration(labelText: 'Телефон'),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.translate('phone')),
                   keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 8),
@@ -128,8 +129,7 @@ class _AddReservationScreenState extends State<AddReservationScreen> {
                           );
                           if (picked != null) setState(() => _start = picked);
                         },
-                        child: Text(
-                            _start == null ? 'Начална дата' : _fmt(_start!)),
+                        child: Text(_start == null ? AppLocalizations.of(context)!.translate('startDate') : _fmt(_start!)),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -144,8 +144,7 @@ class _AddReservationScreenState extends State<AddReservationScreen> {
                           );
                           if (picked != null) setState(() => _end = picked);
                         },
-                        child:
-                            Text(_end == null ? 'Крайна дата' : _fmt(_end!)),
+                        child: Text(_end == null ? AppLocalizations.of(context)!.translate('endDate') : _fmt(_end!)),
                       ),
                     ),
                   ],
@@ -156,7 +155,7 @@ class _AddReservationScreenState extends State<AddReservationScreen> {
                     Expanded(
                       child: TextFormField(
                         controller: _peopleCtrl,
-                        decoration: const InputDecoration(labelText: 'Хора'),
+                        decoration: InputDecoration(labelText: AppLocalizations.of(context)!.translate('people')),
                         keyboardType: TextInputType.number,
                       ),
                     ),
@@ -164,7 +163,7 @@ class _AddReservationScreenState extends State<AddReservationScreen> {
                     Expanded(
                       child: TextFormField(
                         controller: _adultsCtrl,
-                        decoration: const InputDecoration(labelText: 'Възрастни'),
+                        decoration: InputDecoration(labelText: AppLocalizations.of(context)!.translate('adults')),
                         keyboardType: TextInputType.number,
                       ),
                     ),
@@ -172,7 +171,7 @@ class _AddReservationScreenState extends State<AddReservationScreen> {
                     Expanded(
                       child: TextFormField(
                         controller: _kidsCtrl,
-                        decoration: const InputDecoration(labelText: 'Деца'),
+                        decoration: InputDecoration(labelText: AppLocalizations.of(context)!.translate('kids')),
                         keyboardType: TextInputType.number,
                       ),
                     ),
@@ -181,12 +180,12 @@ class _AddReservationScreenState extends State<AddReservationScreen> {
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _cityCtrl,
-                  decoration: const InputDecoration(labelText: 'Град'),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.translate('city')),
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _commentsCtrl,
-                  decoration: const InputDecoration(labelText: 'Коментар'),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.translate('comment')),
                   maxLines: 3,
                 ),
                 const SizedBox(height: 12),
@@ -195,7 +194,7 @@ class _AddReservationScreenState extends State<AddReservationScreen> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: _saving ? null : _save,
-                        child: const Text('Запази'),
+                        child: Text(AppLocalizations.of(context)!.translate('save')),
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -204,7 +203,7 @@ class _AddReservationScreenState extends State<AddReservationScreen> {
                         onPressed: _saving
                             ? null
                             : () => Navigator.of(context).pop(false),
-                        child: const Text('Отказ'),
+                        child: Text(AppLocalizations.of(context)!.translate('cancel')),
                       ),
                     ),
                   ],

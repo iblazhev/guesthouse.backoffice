@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../services/requests_service.dart';
 
 class DateRangeReservationsScreen extends StatefulWidget {
@@ -32,8 +33,8 @@ class _DateRangeReservationsScreenState extends State<DateRangeReservationsScree
       firstDate: DateTime(2000),
       lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
       initialDateRange: initial,
-      saveText: 'Избор',
-      helpText: 'Изберете период',
+      saveText: AppLocalizations.of(context)!.translate('select'),
+      helpText: AppLocalizations.of(context)!.translate('choosePeriod'),
       builder: (ctx, child) => child ?? const SizedBox.shrink(),
     );
 
@@ -102,7 +103,7 @@ class _DateRangeReservationsScreenState extends State<DateRangeReservationsScree
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Резервации от до')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.translate('reservationsFromTo'))),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -114,12 +115,12 @@ class _DateRangeReservationsScreenState extends State<DateRangeReservationsScree
                     child: ElevatedButton.icon(
                       onPressed: _addRange,
                       icon: const Icon(Icons.date_range),
-                      label: const Text('Добави период'),
+                      label: Text(AppLocalizations.of(context)!.translate('addPeriod')),
                     ),
                   ),
                   const SizedBox(width: 8),
                   IconButton(
-                    tooltip: 'Изчисти',
+                    tooltip: AppLocalizations.of(context)!.translate('clear'),
                     onPressed: _clear,
                     icon: const Icon(Icons.clear),
                   ),
@@ -151,7 +152,7 @@ class _DateRangeReservationsScreenState extends State<DateRangeReservationsScree
                     child: ElevatedButton.icon(
                       onPressed: _search,
                       icon: const Icon(Icons.search),
-                      label: const Text('Търси'),
+                      label: Text(AppLocalizations.of(context)!.translate('search')),
                     ),
                   ),
                 ],
@@ -162,8 +163,8 @@ class _DateRangeReservationsScreenState extends State<DateRangeReservationsScree
                     ? Center(
                         child: Text(
                           _searchedOnce
-                              ? 'Няма резултати за избраните периоди'
-                              : 'Добавете един или повече периоди и натиснете „Търси“',
+                              ? AppLocalizations.of(context)!.translate('noResultsForSelectedRanges')
+                              : AppLocalizations.of(context)!.translate('addRangesTip'),
                           textAlign: TextAlign.center,
                         ),
                       )
@@ -183,7 +184,7 @@ class _DateRangeReservationsScreenState extends State<DateRangeReservationsScree
                           }
                           final items = snapshot.data ?? const <BookingRequest>[];
                           if (items.isEmpty) {
-                            return const Center(child: Text('Няма резултати'));
+                            return Center(child: Text(AppLocalizations.of(context)!.translate('noResults')));
                           }
                           return ListView.separated(
                             itemCount: items.length,

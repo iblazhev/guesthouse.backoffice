@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 class MonthlyCalendar extends StatelessWidget {
   final int year;
@@ -50,10 +51,29 @@ class MonthlyCalendar extends StatelessWidget {
     final int firstWeekday = firstDayOfMonth.weekday; // Mon=1..Sun=7
     final startDate = firstDayOfMonth.subtract(Duration(days: firstWeekday - 1));
 
-    const weekdayLabelsBg = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
-    const monthNamesBg = [
-      'Януари', 'Февруари', 'Март', 'Април', 'Май', 'Юни',
-      'Юли', 'Август', 'Септември', 'Октомври', 'Ноември', 'Декември'
+    final tr = AppLocalizations.of(context)!.translate;
+    final weekdayLabels = [
+      tr('weekdayMonShort'),
+      tr('weekdayTueShort'),
+      tr('weekdayWedShort'),
+      tr('weekdayThuShort'),
+      tr('weekdayFriShort'),
+      tr('weekdaySatShort'),
+      tr('weekdaySunShort'),
+    ];
+    final monthNames = [
+      tr('monthJanuary'),
+      tr('monthFebruary'),
+      tr('monthMarch'),
+      tr('monthApril'),
+      tr('monthMay'),
+      tr('monthJune'),
+      tr('monthJuly'),
+      tr('monthAugust'),
+      tr('monthSeptember'),
+      tr('monthOctober'),
+      tr('monthNovember'),
+      tr('monthDecember'),
     ];
 
     return Padding(
@@ -65,7 +85,7 @@ class MonthlyCalendar extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Text(
-                '${monthNamesBg[month - 1]} $year',
+                '${monthNames[month - 1]} $year',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
@@ -78,7 +98,7 @@ class MonthlyCalendar extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6.0),
                     child: Text(
-                      weekdayLabelsBg[index],
+                      weekdayLabels[index],
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
@@ -210,15 +230,15 @@ class MonthlyCalendar extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 6),
-                const Text('Резервация'),
+                Text(tr('legendReservation')),
                 const SizedBox(width: 16),
                 Container(width: 14, height: 14, color: startColor),
                 const SizedBox(width: 6),
-                const Text('Начало'),
+                Text(tr('legendStart')),
                 const SizedBox(width: 16),
                 Container(width: 14, height: 14, color: endColor),
                 const SizedBox(width: 6),
-                const Text('Край'),
+                Text(tr('legendEnd')),
               ],
             ),
           )

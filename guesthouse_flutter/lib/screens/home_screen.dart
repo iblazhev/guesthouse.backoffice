@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 import '../services/auth_service.dart';
+import '../main.dart';
 import 'reservations_screen.dart';
 import 'date_range_reservations_screen.dart';
 
@@ -11,8 +13,17 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Здравей, ${user.username}!'),
+        title: Text('${AppLocalizations.of(context)!.translate('hello')}, ${user.username}!'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.language),
+            tooltip: AppLocalizations.of(context)!.translate('switchLanguage'),
+            onPressed: () {
+              final current = Localizations.localeOf(context).languageCode;
+              final next = current == 'bg' ? const Locale('en') : const Locale('bg');
+              MyApp.of(context)?.setLocale(next);
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
@@ -25,9 +36,9 @@ class HomeScreen extends StatelessWidget {
         children: [
           ListTile(
             leading: const Icon(Icons.book_online, color: Colors.blue),
-            title: const Text(
-              'Резервации',
-              style: TextStyle(fontSize: 18),
+            title: Text(
+              AppLocalizations.of(context)!.translate('reservations'),
+              style: const TextStyle(fontSize: 18),
             ),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
@@ -41,9 +52,9 @@ class HomeScreen extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.date_range, color: Colors.blue),
-            title: const Text(
-              'Резервации от до',
-              style: TextStyle(fontSize: 18),
+            title: Text(
+              AppLocalizations.of(context)!.translate('reservationsFromTo'),
+              style: const TextStyle(fontSize: 18),
             ),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
